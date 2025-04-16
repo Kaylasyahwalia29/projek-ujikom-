@@ -32,15 +32,15 @@ class HomeController extends Controller
         } else {
             $informasi = informasi::all();
             $kategori = kategori::all();
-            // $produk = produk::all();
-            return view('index', compact('informasi', 'kategori'));
+            $produk = produk::all();
+            return view('index', compact('informasi', 'kategori', 'produk'));
 
-            return view('index');
+            // return view('index');
         }
         $informasi = informasi::all();
         $kategori = kategori::all();
-        // $produk = produk::all();
-        return view('index', compact('informasi', 'kategori'));
+        $produk = produk::all();
+        return view('index', compact('informasi', 'kategori', 'produk'));
 
     }
 }

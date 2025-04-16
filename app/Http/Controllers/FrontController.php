@@ -1,26 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\informasi;
-use App\Models\kategori;
-use App\Models\keranjang;
-use App\Models\produk;
+use App\Models\Informasi;
+use App\Models\Kategori;
+use App\Models\Keranjang;
+use App\Models\Produk;
 
 class FrontController extends Controller
 {
-
     public function index()
     {
-        $informasi = informasi::all();
-        $kategori = kategori::all();
-        $produk = produk::all();
+        $informasi = Informasi::all();
+        $kategori = Kategori::all();
+        $produk = Produk::all();
         return view('index', compact('informasi', 'kategori', 'produk'));
     }
 
     public function produk()
     {
-        $produk = produk::all();
+        $produk = Produk::all();
         return view('produk', compact('produk'));
     }
 
@@ -31,8 +29,8 @@ class FrontController extends Controller
 
     public function keranjang()
     {
-        $produk = produk::all();
-        $keranjang = keranjang::all();
+        $produk = Produk::all();
+        $keranjang = Keranjang::all();
         return view('keranjang', compact('produk', 'keranjang'));
     }
 
@@ -43,7 +41,7 @@ class FrontController extends Controller
 
     public function informasi()
     {
-        $informasi = informasi::all();
+        $informasi = Informasi::all();
         return view('informasi', compact('informasi'));
     }
 
@@ -54,15 +52,14 @@ class FrontController extends Controller
 
     public function kategori()
     {
-        $produk = produk::all();
-        $kategori = kategori::all();
+        $produk = Produk::all();
+        $kategori = Kategori::all();
         return view('produk', compact('produk', 'kategori'));
     }
 
     public function show($id)
     {
-        $produk = produk::findorfail($id);
+        $produk = Produk::findOrFail($id);
         return view('detailproduk', compact('produk'));
     }
-
 }

@@ -1,19 +1,17 @@
 <?php
-
 namespace App\Models;
 
+use App\Models\Kategori;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Kategori;
-
 
 class produk extends Model
 {
-use HasFactory;
+    use HasFactory;
     protected $fillable = [
         'id',
         'name_produk',
-        'kategori_produk',
+        // 'kategori_produk',
         'desc_produk',
         'harga_produk',
         'stok_produk',

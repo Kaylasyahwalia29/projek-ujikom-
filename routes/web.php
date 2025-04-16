@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\KeranjangController;
+
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -21,12 +23,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // front
 Route::get('/', [FrontController::class, 'index']);
-
 // Route::get('kategori/shop/{id}', function ($id) {
 //     return view('shop');
 // });
@@ -35,11 +35,14 @@ Route::get('/', [FrontController::class, 'index']);
 //     return view('produk', ['kategori' => kategori::findOrFail($id)]);
 // });
 
+// FRONTEND
 Route::get('produk', [FrontController::class, 'produk']);
-Route::get('produk/{id}', [FrontController::class, 'show']);
 Route::get('produk/kategori/{id}', [KategoriController::class, 'show']);
+Route::get('produk/{id}', [FrontController::class, 'show']);
 Route::get('about', [FrontController::class, 'about']);
 Route::get('keranjang', [FrontController::class, 'keranjang']);
+// Route::get('/tambah-keranjang/{id}', [App\Http\Controllers\CartController::class, 'tambah'])->name('tambah.keranjang');
+
 // harus login masuk ke pembayaran
 Route::group(['middleware' => 'auth'], function () {
     Route::get('pembayaran', [FrontController::class, 'pembayaran']);
@@ -53,21 +56,23 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', IsAdmin::class]], fu
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
+
     Route::resource('informasi', App\Http\Controllers\InformasiController::class);
     Route::resource('kategori', App\Http\Controllers\KategoriController::class);
     // Route untuk user lihat detail kategori
     // Route::get('/kategori/{id}', [KategoriController::class, 'showKategoriToUser'])->name('kategori.detail');
     // Route::get('/kategori/{id}', [App\Http\Controllers\KategoriController::class, 'show'])->name('kategori.show');
     // Route untuk detail produk
-    Route::get('/produk/{id}', [App\Http\Controllers\ProdukController::class, 'show'])->name('produk.show');
-    // Route::resource('produk', App\Http\Controllers\ProdukController::class);
+    // Route::get('/produk/{id}', [App\Http\Controllers\ProdukController::class, 'show'])->name('produk.show');
+    Route::resource('produk', App\Http\Controllers\ProdukController::class);
     // Route::resource('image', App\Http\Controllers\ImageController::class);
     Route::resource('method', App\Http\Controllers\MethodController::class);
     Route::resource('pembayaran', App\Http\Controllers\PembayaranController::class);
     Route::resource('keranjang', App\Http\Controllers\KeranjangController::class);
-    // Route::post('/keranjang', [KeranjangController::class, 'store'])->name('keranjang.store');
 
+    // Route::post('/keranjang', [KeranjangController::class, 'store'])->name('keranjang.store');
     Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
     Route::resource('user', App\Http\Controllers\UsersController::class);
     // Route::resource('produk/{produkId}/crete', App\Http\Controllers\ImageController::class);
+    
 });

@@ -8,13 +8,14 @@ class Keranjang extends Model
 {
     use HasFactory;
 
-    protected $table = 'keranjangs';
-
+    protected $table    = 'keranjangs';
+    
     protected $fillable = [
         'produk_id',
         'jumlah',
         'total_harga',
         'image',
+        'user_id', // Tambahkan ini
     ];
 
     // protected $visible = [
@@ -30,7 +31,7 @@ class Keranjang extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
-    
+
 //     public function produk()
 // {
 //     return $this->belongsTo(Produk::class);

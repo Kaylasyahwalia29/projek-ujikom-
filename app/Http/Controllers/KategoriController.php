@@ -14,7 +14,7 @@ class KategoriController extends Controller
         $kategori = kategori::all();
         $produk   = produk::all();
         confirmDelete('Delete', 'Apakah Kamu Yakin?');
-        return view('user.kategori.index', compact('kategori'));
+        // return view('user.kategori.index', compact('kategori'));
         return view('admin.kategori.index', compact('kategori'));
     }
 

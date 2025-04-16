@@ -7,7 +7,7 @@
         <div class="row justify-content-between">
             <div class="col-lg-5">
                 <div class="intro-excerpt">
-                    <h1>Shop</h1>
+                    <h1>Shop</h1> 
                 </div>
             </div>
             <div class="col-lg-7">
@@ -32,9 +32,8 @@
                         <p class="product-description">{{ $item->desc_produk }}</p>
                         <strong class="product-price">Rp {{ number_format($item->harga_produk, 0, ',', '.') }}</strong>
                         <br>
-                        <a href="{{ url('keranjang') }}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle-fill mr-2"></i>Add to Cart
-                        </a>
+                        <br>
+                                                                                                                                                                                                                                                                                     c
                     </a>
                 </div>
             </div>

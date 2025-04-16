@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header">
             <div class="float-start">
-                <h5> Transaksi </h5>
+                <h5>Transaksi</h5>
             </div>
             <div class="float-end">
                 <a href="{{ route('transaksi.create') }}" class="btn btn-sm btn-primary">
@@ -24,7 +24,8 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Pengguna</th>
-                            <th>Nama Barang</th>
+                            <th>Nama Produk</th>
+                            <th>Jumlah</th>
                             <th>Total</th>
                             <th>Tanggal Transaksi</th>
                             <th>Action</th>
@@ -35,9 +36,10 @@
                         @foreach ($transaksis as $item)
                             <tr>
                                 <td>{{ $no++ }}</td>
-                                <td>{{ $item->pengguna->nama ?? '-' }}</td>
-                                <td>{{ $item->barang->nama_barang ?? '-' }}</td>
-                                <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                                <td>{{ $item->user->name ?? '-' }}</td>
+                                <td>{{ $item->keranjang->produk->name_produk ?? '-' }}</td>
+                                <td>{{ $item->keranjang->jumlah ?? 0 }}</td>
+                                <td>Rp {{ number_format($item->keranjang->produk->harga_produk * $item->keranjang->jumlah, 0, ',', '.') }}</td>
                                 <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
                                 <td>
                                     <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST">

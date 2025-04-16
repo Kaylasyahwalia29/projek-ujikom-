@@ -24,8 +24,9 @@ public function store(Request $request)
 {
     $validate = Validator::make($request->all(), [
         'name_produk'      => 'required',
-        'desc_produk'      => 'required',
         'harga_produk'     => 'required',
+        'desc_produk'      => 'required',
+        // 'kategori_produk'     => 'required',
         'stok_produk'      => 'required',
         'id_kategori'      => 'required',
         'image_produk'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // validasi file
@@ -43,6 +44,7 @@ public function store(Request $request)
         $produk = new Produk();
         $produk->name_produk     = $request->name_produk;
         $produk->desc_produk     = $request->desc_produk;
+        // $produk->kategori_produk = $request->kategori_produk;
         $produk->harga_produk    = $request->harga_produk;
         $produk->stok_produk     = $request->stok_produk;
         $produk->id_kategori     = $request->id_kategori;
@@ -97,6 +99,7 @@ public function store(Request $request)
         $validatedData = $request->validate([
             'name_produk'  => 'required',
             'desc_produk'  => 'required',
+            // 'kategori_produk'  => 'required',
             'harga_produk' => 'required',
             'stok_produk'  => 'required',
             'id_kategori'  => 'required',

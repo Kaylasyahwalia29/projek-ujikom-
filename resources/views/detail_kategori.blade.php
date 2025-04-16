@@ -10,7 +10,7 @@
             <div class="row">
                 @foreach ($produk as $item)
                     <div class="col-md-3 mb-4">
-                        <div class="card h-100 shadow-sm">
+                         <div class="card h-100 shadow-sm">
                             <img src="{{ asset('images/produk/' . $item->image) }}" class="card-img-top"
                                 style="height: 200px; object-fit: cover;" alt="{{ $item->name_produk }}">
                             <div class="card-body d-flex flex-column">

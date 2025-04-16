@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\ProdukController;
+use App\Http\Controllers\Api\UserApiController;
+
+// use App\Http\Controllers\ProfileApiController;
 use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Http\Request;
@@ -65,4 +68,14 @@ Route::prefix('produk')->group(function () {
     Route::put('/{id}', [ProdukController::class, 'update']); 
     Route::delete('/{id}', [ProdukController::class, 'destroy']);
 
+});
+
+// Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'profile']);
+
+Route::prefix('profile')->group(function () {
+    Route::get('/', [UserApiController::class, 'index']);
+    Route::post('/', [UserApiController::class, 'store']);
+    Route::get('/{id}', [UserApiController::class, 'show']);
+    Route::put('/{id}', [UserApiController::class, 'update']);
+    Route::delete('/{id}', [UserApiController::class, 'destroy']);
 });
