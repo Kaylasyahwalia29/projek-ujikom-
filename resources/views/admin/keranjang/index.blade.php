@@ -52,7 +52,7 @@
                                 <a href="{{route('keranjang.show', $item->id)}}" class="btn btn-sm btn-warning">Show
                                 </a>
                                 <a href="{{ route('keranjang.destroy', $item->id) }}" class="btn btn-sm btn btn-danger"
-                                    data-confirm-delete="true">Delete</a>
+                                    data-confirm-delete="true">Hapus</a>
 
                             </form>
                             </td>
