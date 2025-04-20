@@ -139,26 +139,110 @@
                     <p class="description">{{ $produk->desc_produk }}</p>
 
                     {{-- <form action="{{ route('keranjang', $produk->id) }}" method="POST"> --}}
-                    @csrf
+
                     {{-- <div class="quantity-wrapper">
                         <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
                         <input type="number" name="jumlah" id="qtyInput" value="1" min="1" class="qty-input">
                         <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
                     </div> --}}
-                    <form action="{{ route('keranjang.store') }}" method="POST">
+                    <form id="addToCartForm" method="POST">
                         @csrf
                         <input type="hidden" name="produk_id" value="{{ $produk->id }}">
                         <input type="hidden" name="total" id="totalInput" value="{{ $produk->harga_produk }}">
-                        <div class="quantity-wrapper">
-                            <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+
+                        <div class="quantity-wrapper d-flex align-items-center">
+                            <button type="button" class="qty-btn btn btn-outline-secondary me-2"
+                                onclick="changeQty(-1)">−</button>
                             <input type="number" name="jumlah" id="qtyInput" value="1" min="1"
-                                class="qty-input">
-                            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                                class="qty-input form-control text-center" style="width: 60px;">
+                            <button type="button" class="qty-btn btn btn-outline-secondary ms-2"
+                                onclick="changeQty(1)">+</button>
                         </div>
-                        <button type="submit" class="add-to-cart">Add to KERANJANG</button>
+                        @if (Auth::check())
+                            <button type="submit" class="btn btn-primary mt-3">Keranjang</button>
+                        @else
+                            <button type="button" class="btn btn-primary mt-3"
+                                onclick="redirectToLogin()">Keranjang</button>
+                        @endif
+
+
                     </form>
+
+
+
 
                 </div>
             </div>
         </div>
+    @endsection
+    @section('scripts-front')
+        <script>
+            function redirectToLogin() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Login Diperlukan',
+                    text: 'Silakan login terlebih dahulu untuk menambahkan ke keranjang.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Login Sekarang',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}";
+                    }
+                });
+            }
+
+            function changeQty(amount) {
+                const qtyInput = $('#qtyInput');
+                let current = parseInt(qtyInput.val()) || 1;
+                let newValue = current + amount;
+
+                if (newValue < 1) newValue = 1;
+                qtyInput.val(newValue);
+
+                const price = {{ $produk->harga_produk ?? 0 }};
+                $('#totalInput').val(newValue * price);
+            }
+
+            $(document).ready(function() {
+                $('#addToCartForm').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+                    let formData = form.serialize();
+
+                    $.ajax({
+                        url: "{{ route('keranjang.add') }}",
+                        type: "POST",
+                        data: formData,
+                        success: function(data) {
+                            if (data.success) {
+                                $('#cart-count').text(data.cart_count);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses!',
+                                    text: 'Berhasil ditambahkan ke keranjang.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Gagal',
+                                    text: data.message || 'Gagal menambahkan ke keranjang.',
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'Terjadi kesalahan saat menambahkan ke keranjang.',
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
     @endsection

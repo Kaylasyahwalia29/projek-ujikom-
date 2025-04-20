@@ -1,24 +1,27 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Pengguna;
+use App\Models\produk;
 use App\Models\Transaksi;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksis = Transaksi::with(['pengguna', 'barang'])->get();
-        confirmDelete('Delete', 'Apakah Kamu Yakin?');
+        $transaksis = DB::table('transaksis')->get();
         return view('admin.transaksi.index', compact('transaksis'));
     }
 
     public function create()
     {
-        $penggunas = Pengguna::all();
-        $barangs   = Barang::all();
+        $penggunas = User::all();
+        $barangs   = produk::all();
         return view('admin.transaksi.create', compact('penggunas', 'barangs'));
     }
 
@@ -34,10 +37,27 @@ class TransaksiController extends Controller
             'id_pengguna' => $request->id_pengguna,
             'id_barang'   => $request->id_barang,
             'total'       => $request->total,
+            'status'      => 'Belum Bayar', // default saat create
         ]);
+
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
+
+
+    public function ubahStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Belum Bayar,Dikemas,Dikirim,Selesai,Pengembalian,Dibatalkan',
+        ]);
+
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->status = $request->status;
+        $transaksi->save();
+
+        return redirect()->back()->with('success', 'Status berhasil diubah.');
+    }
+
 
     public function show($id)
     {

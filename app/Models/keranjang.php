@@ -8,8 +8,8 @@ class Keranjang extends Model
 {
     use HasFactory;
 
-    protected $table    = 'keranjangs';
-    
+    protected $table = 'keranjangs';
+
     protected $fillable = [
         'produk_id',
         'jumlah',
@@ -18,12 +18,6 @@ class Keranjang extends Model
         'user_id', // Tambahkan ini
     ];
 
-    // protected $visible = [
-    //     'produk_id',
-    //     'jumlah',
-    //     'total',
-    //     'image',
-    // ];
 
     public $timestamps = true;
 

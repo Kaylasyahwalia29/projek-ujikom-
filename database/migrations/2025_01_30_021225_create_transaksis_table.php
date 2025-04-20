@@ -13,7 +13,9 @@ return new class extends Migration
             $table->string('nama_pengguna');
             $table->string('nama_produk', 100);
             $table->integer('total_harga');
+            $table->integer('jumlah_produk');
             $table->date('tanggal_transaksi');
+            $table->enum('status', ['Belum Bayar', 'Dikemas', 'Dikirim', 'Selesai', 'Pengembalian', 'Dibatalkan'])->default('Belum Bayar');
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_pembayaran');
             $table->timestamps();

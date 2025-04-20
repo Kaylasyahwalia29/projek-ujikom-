@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Informasi;
 use App\Models\Kategori;
 use App\Models\Keranjang;
+use App\Models\method;
 use App\Models\Produk;
 
 class FrontController extends Controller
@@ -36,7 +37,16 @@ class FrontController extends Controller
 
     public function pembayaran()
     {
-        return view('pembayaran');
+        $cartItems = Keranjang::with('produk')->get(); // Tambahkan ->where('user_id', auth()->id()) kalau kamu pakai user
+
+        // Hitung total harga semua item
+        $total = $cartItems->sum(function ($item) {
+            return $item->jumlah * $item->produk->harga_produk;
+        });
+
+        $methods = method::all();
+
+        return view('pembayaran', compact('cartItems', 'total','methods'));
     }
 
     public function informasi()
@@ -62,4 +72,7 @@ class FrontController extends Controller
         $produk = Produk::findOrFail($id);
         return view('detailproduk', compact('produk'));
     }
+
+
+    
 }

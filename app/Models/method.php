@@ -12,8 +12,8 @@ class method extends Model
     public $visible = ['name_method'];
     public $timestamps = true;
 
-    public function method()
+    public function pembayaran()
     {
-        return $this->hasMany(method::class, 'id_method');
+        return $this->hasMany(pembayaran::class);
     }
 }

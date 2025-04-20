@@ -8,17 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     use HasFactory;
-    public $fillable = ['id', 'nama_pengguna', 'nama_produk', 'total_hatga', 'tanggal_transaksi'];
+    protected $fillable = [
+        'nama_pengguna','jumlah_produk', 'nama_produk', 'total_harga', 'tanggal_transaksi', 'id_user', 'id_pembayaran', 'status'
+    ];
+
     public $timestamps = true;
 
-    public function pengguna()
+    public function detailTransaksi()
     {
-        return $this->belongsTo(Pengguna::class, 'id_pengguna', 'id_pengguna');
+        return $this->hasMany(Detail_Transaksi::class, 'id_transaksi');
     }
 
-    // Relasi ke Barang (One-to-Many dengan barang)
-    public function barang()
+    public function pembayaran()
     {
-        return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
+        return $this->belongsTo(Pembayaran::class, 'id_pembayaran');
     }
 }

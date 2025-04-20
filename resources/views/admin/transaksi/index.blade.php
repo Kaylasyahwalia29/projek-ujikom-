@@ -28,38 +28,47 @@
                             <th>Jumlah</th>
                             <th>Total</th>
                             <th>Tanggal Transaksi</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php $no = 1; @endphp
                         @foreach ($transaksis as $item)
-                            <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $item->user->name ?? '-' }}</td>
-                                <td>{{ $item->keranjang->produk->name_produk ?? '-' }}</td>
-                                <td>{{ $item->keranjang->jumlah ?? 0 }}</td>
-                                <td>Rp {{ number_format($item->keranjang->produk->harga_produk * $item->keranjang->jumlah, 0, ',', '.') }}</td>
-                                <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
-                                <td>
-                                    <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <a href="{{ route('transaksi.edit', $item->id) }}" class="btn btn-sm btn-success">
-                                            Edit
-                                        </a>
-                                        <a href="{{ route('transaksi.show', $item->id) }}" class="btn btn-sm btn-warning">
-                                            Show
-                                        </a>
-                                        <button type="submit" class="btn btn-sm btn-danger" data-confirm-delete="true">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <tr>
+                            <td>{{ $no++ }}</td>
+                            <td>{{ $item->nama_pengguna }}</td>
+                            <td>{{ $item->nama_produk }}</td>
+                            <td>{{ $item->jumlah_produk }}</td>
+                            <td>Rp {{ number_format($item->total_harga, 0, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</td>
+                            <td>
+                                <form action="{{ route('transaksi.ubahStatus', $item->id) }}" method="POST">
+                                    @csrf
+                                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        @foreach(['Belum Bayar', 'Dikemas', 'Dikirim', 'Selesai', 'Pengembalian', 'Dibatalkan'] as $status)
+                                            <option value="{{ $status }}" {{ $item->status == $status ? 'selected' : '' }}>
+                                                {{ $status }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a href="{{ route('transaksi.edit', $item->id) }}" class="btn btn-sm btn-success">Edit</a>
+                                    <a href="{{ route('transaksi.show', $item->id) }}" class="btn btn-sm btn-warning">Show</a>
+                                    <button type="submit" class="btn btn-sm btn-danger" data-confirm-delete="true">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>

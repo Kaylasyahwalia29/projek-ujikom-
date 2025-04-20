@@ -21,10 +21,7 @@
             <table class="table" id="example">
                 <thead>
                     <td>No</td>
-                    <td>Nama</td>
                     <td>Alamat</td>
-                    <td>Tanggal Bayar</td>
-                    <td>Jumlah Bayar</td>
                     <td>Method</td>
                     <td>Action</td>
                 </thead>
@@ -33,11 +30,8 @@
                     @foreach ($pembayaran as $item)
                     <tr>
                         <td>{{$no++}}</td>
-                        <td>{{$item->nama}}</td>
                         <td>{{$item->alamat}}</td>
-                        <td>{{$item->tanggak_bayar}}</td>
-                        <td>{{$item->Jumlah_Bayar}}</td>
-                        <td>{{$item->method}}</td>
+                        <td>{{$item->method->name_method}}</td>
                         {{-- <td>{{$item->harga}}</td>
                         <td>{{$item->stok}}</td> --}}
                         <td>

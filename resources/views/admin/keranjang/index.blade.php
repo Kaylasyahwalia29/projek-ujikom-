@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                     @php $no = 1; @endphp
-                    @foreach ($keranjang as $item) 
+                    @foreach ($keranjang as $item)
                         <tr>
                             <td>{{ $no++ }}</td>
                            <td>{{ $item->produk->name_produk ?? '-' }}</td>
@@ -39,10 +39,10 @@
                                 @if($item->image)
                                     <img src="{{ asset('images/produk/' . $item->image) }}" alt="Image" width="80">
                                 @else
-                                    
+
                                 @endif
                             </td>
-                            <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($item->total_harga, 0, ',', '.') }}</td>
                             <td>
                                  <form action="{{route('keranjang.destroy', $item->id)}}" method="POST">
                                 @method('DELETE')
@@ -53,7 +53,7 @@
                                 </a>
                                 <a href="{{ route('keranjang.destroy', $item->id) }}" class="btn btn-sm btn btn-danger"
                                     data-confirm-delete="true">Delete</a>
-                
+
                             </form>
                             </td>
                         </tr>

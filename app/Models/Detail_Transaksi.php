@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Detail_Transaksi extends Model
 {
     use HasFactory;
-    public $fillable = ['id', 'id_transaksi', 'id_produk'];
+    public $fillable = ['id', 'id_transaksi', 'id_produk','jumlah'];
     public $timestamps = true;
 
     public function transaksi()

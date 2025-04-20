@@ -16,39 +16,52 @@
                                     <th class="product-total">Total Harga</th>
                                 </tr>
                             </thead>
-                            
+
                             <tbody>
                                 @php $overallTotal = 0; @endphp
                                 @foreach ($keranjang as $item)
                                     @php
                                         $jumlah = $item->jumlah ?? 1;
-                                        $harga = $item->produk->harga ?? 0;
+                                        $harga = $item->produk->harga_produk ?? 0;
                                         $total = $jumlah * $harga;
                                         $overallTotal += $total;
                                     @endphp
                                     <tr>
-                                        {{-- <img src="{{ asset('front/images/produk/' . ($item->produk->image_produk ?? 'default.jpg')) }}"
-                                            class="img-fluid" style="height: 100px">
-                                        <h2 class="h5 text-black">{{ $item->produk->nama ?? 'Produk tidak ditemukan' }}</h2> --}}
-                                        @if ($item->produk)
-                                            <td class="product-name">
+                                        <td class="product-thumbnail">
+                                            @if ($item->produk && $item->produk->image_produk)
+                                                <img src="{{ asset('images/produk/' . $item->produk->image_produk) }}"
+                                                    class="img-fluid" style="height: 100px">
+                                            @else
+                                                <img src="{{ asset('front/images/produk/default.jpg') }}" class="img-fluid"
+                                                    style="height: 100px">
+                                            @endif
+                                        </td>
+
+                                        <td class="product-name">
+                                            @if ($item->produk)
                                                 <h2 class="h5 text-black">{{ $item->produk->name_produk }}</h2>
-                                            </td>
-                                        @else
-                                            <td class="product-name">
+                                            @else
                                                 <h2 class="h5 text-danger">Produk tidak ditemukan</h2>
-                                            </td>
-                                        @endif
+                                            @endif
+                                        </td>
                                         <td>{{ number_format($harga, 0, ',', '.') }}</td>
                                         <td>
-                                            <div class="input-group mb-3 d-flex align-items-center quantity-container"
-                                                style="max-width: 120px;">
+                                            <div class="input-group quantity-container" style="max-width: 140px;">
+                                                <button type="button" class="btn btn-outline-secondary qty-btn"
+                                                    onclick="changeQty(this, -1, {{ $item->id }}, {{ $harga }})">−</button>
                                                 <input type="number" class="form-control text-center quantity-amount"
                                                     value="{{ $jumlah }}" min="1"
-                                                    onchange="updateTotal(this, {{ $harga }})">
+                                                    oninput="updateTotal(this, {{ $harga }}, {{ $item->id }})">
+                                                <button type="button" class="btn btn-outline-secondary qty-btn"
+                                                    onclick="changeQty(this, 1, {{ $item->id }}, {{ $harga }})">+</button>
                                             </div>
                                         </td>
+
                                         <td class="total-harga">{{ number_format($total, 0, ',', '.') }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="hapusProduk({{ $item->id }})">Hapus</button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -92,14 +105,42 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('scripts-front')
     <script>
-        function updateTotal(element, price) {
-            let quantity = parseInt(element.value);
+        function changeQty(button, change, itemId, price) {
+            let input = button.parentElement.querySelector('.quantity-amount');
+            let newQty = Math.max(1, parseInt(input.value) + change);
+            input.value = newQty;
+
+            updateTotal(input, price, itemId);
+            updateQtyToServer(itemId, newQty);
+        }
+
+        function updateTotal(input, price, itemId) {
+            let quantity = parseInt(input.value);
             let total = price * quantity;
-            let totalHargaElement = element.closest('tr').querySelector('.total-harga');
+            let totalHargaElement = input.closest('tr').querySelector('.total-harga');
             totalHargaElement.innerHTML = formatNumber(total);
             updateOverallTotal();
+        }
+
+        function updateQtyToServer(itemId, newQty) {
+            fetch(`/keranjang/update-qty/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        jumlah: newQty
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Gagal update jumlah!');
+                    }
+                });
         }
 
         function updateOverallTotal() {
@@ -115,6 +156,44 @@
 
         function formatNumber(number) {
             return number.toLocaleString('id-ID');
+        }
+
+
+        function hapusProduk(id) {
+            Swal.fire({
+                title: 'Hapus Produk?',
+                text: "Produk akan dihapus dari keranjang!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/keranjang-user/delete/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Produk telah dihapus.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Gagal', 'Tidak bisa menghapus produk.', 'error');
+                            }
+                        });
+                }
+            });
         }
     </script>
 @endsection

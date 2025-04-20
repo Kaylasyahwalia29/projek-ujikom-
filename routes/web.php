@@ -3,7 +3,10 @@
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KeranjangController;
-
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -72,7 +75,26 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', IsAdmin::class]], fu
 
     // Route::post('/keranjang', [KeranjangController::class, 'store'])->name('keranjang.store');
     Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
+    Route::post('/transaksi/{id}/ubah-status', [TransaksiController::class, 'ubahStatus'])->name('transaksi.ubahStatus');
+
     Route::resource('user', App\Http\Controllers\UsersController::class);
     // Route::resource('produk/{produkId}/crete', App\Http\Controllers\ImageController::class);
-    
+
 });
+
+
+// web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/keranjang', [KeranjangController::class, 'userIndex'])->name('keranjang.user');
+    Route::post('/keranjang/tambah', [KeranjangController::class, 'add'])->name('keranjang.add');
+    Route::post('/keranjang-user/update/{id}', [KeranjangController::class, 'updateKeranjang']);
+    Route::delete('/keranjang-user/delete/{id}', [KeranjangController::class, 'destroyKeranjang']);
+    Route::put('/keranjang/update-qty/{id}', [KeranjangController::class, 'updateQty']);
+    Route::post('/order', [OrderController::class, 'placeOrder'])->name('order.place');
+    Route::post('/chekout-proses', [PembayaranController::class, 'prosesCheckout'])->name('checkout.proses');
+    Route::get('/invoice/{id}',[PembayaranController::class,'showInvoice'])->name('invoice.show');
+    Route::get('/pesanan-saya', [PembayaranController::class, 'pesananSaya'])->name('pesanan.saya');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
+
